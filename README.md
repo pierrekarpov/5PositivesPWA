@@ -19,3 +19,8 @@ npm run build
 ```
 npm run lint
 ```
+
+### Deploy to Firebase
+```
+firebase deploy
+```

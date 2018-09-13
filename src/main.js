@@ -37,17 +37,6 @@ export const db = firebase.firestore()
 
 firebase.auth().onAuthStateChanged(function (user) {
   if (!app) {
-    // app = new Vue({
-    //   el: '#app',
-    //   template: '<App/>',
-    //   component: { App },
-    //   router,
-    //   mq: {
-    //     phone: '(max-width: 768px)',
-    //     tablet: '(max-width: 1024px)',
-    //     desktop: '(min-width: 1024px)'
-    //   }
-    // })
     app = new Vue({
       router,
       data: {
