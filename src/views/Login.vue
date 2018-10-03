@@ -1,35 +1,46 @@
 <template>
   <div class="login">
-    <h3>Sign In</h3>
-    <input type="text" v-model="email" placeholder="Email"><br>
-    <input type="password" v-model="password" placeholder="Password"><br>
-    <button v-on:click="signIn">Connection</button>
-    <p>You don't have an account? You can <router-link to="/sign-up">create one</router-link></p>
+   <div id="firebaseui-auth-container"></div>
   </div>
 </template>
 
 <script>
 import firebase from 'firebase'
+import firebaseui from 'firebaseui'
+import { db, globalStore } from '../main'
 
 export default {
   name: 'login',
-  data: function() {
-    return {
-      email: '',
-      password: ''
-    }
-  },
-  methods: {
-    signIn: function() {
-      firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
-        (user) => {
-          this.$router.replace('positives')
-        },
-        (err) => {
-          alert('Oops. ' + err.message)
+  mounted () {
+    var uiConfig = {
+      credentialHelper: firebaseui.auth.CredentialHelper.NONE,
+      signInOptions: [
+        firebase.auth.EmailAuthProvider.PROVIDER_ID,
+        firebase.auth.PhoneAuthProvider.PROVIDER_ID
+      ],
+      callbacks: {
+        signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+          if (authResult.user) {
+            db.collection('users').where('auth_id', '==', authResult.user.uid)
+              .get()
+              .then((querySnapshot) => {
+                if (!querySnapshot.empty) {
+                  globalStore.user = querySnapshot.docs[0]
+                  this.$router.replace('positives')
+                }
+              })
+              .catch((error) => {
+                console.log('Error getting documents: ', error)
+              })
+          }
         }
-      )
+      }
     }
+    let ui = firebaseui.auth.AuthUI.getInstance()
+    if (!ui) {
+      ui = new firebaseui.auth.AuthUI(firebase.auth())
+    }
+    ui.start('#firebaseui-auth-container', uiConfig)
   }
 }
 </script>

@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import firebase from 'firebase'
 
 import Login from './views/Login.vue'
-import SignUp from './views/SignUp.vue'
 import Positives from './views/Positives.vue'
 
 Vue.use(Router)
@@ -38,22 +37,24 @@ let router = new Router({
       path: '/login',
       name: 'Login',
       component: Login
-    },
-    {
-      path: '/sign-up',
-      name: 'SignUp',
-      component: SignUp
     }
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  let currentUser = firebase.auth().currentUser
-  let requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  // let currentUser = firebase.auth().currentUser
+  // let requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  //
+  // console.log(currentUser)
+  // console.log(requiresAuth)
+  // console.log(requiresAuth && !currentUser)
+  // console.log(!requiresAuth && currentUser)
+  next()
 
-  if (requiresAuth && !currentUser) next('login')
-  else if (!requiresAuth && currentUser) next('positives')
-  else next()
+  //
+  // if (requiresAuth && !currentUser) next('login')
+  // else if (!requiresAuth && currentUser) next('positives')
+  // else next()
 })
 
 export default router
