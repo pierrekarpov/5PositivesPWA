@@ -40,8 +40,6 @@
 
 <script>
 import PositiveList from './PositiveList.vue'
-import { db } from '../main'
-import moment from 'moment'
 
 export default {
   components: {
@@ -66,38 +64,6 @@ export default {
     range: function () {
       return this.$mq.phone ? this.phoneRange : this.desktopRange
     }
-  },
-  firestore () {
-    if (this.userId) {
-      return {
-        firebasePositives: db.collection('positives').doc(this.userId).collection('data_by_day')
-      }
-    } else {
-      return {
-        firebasePositives: db.collection('positives').doc('-1').collection('data_by_day')
-      }
-    }
-  },
-  mounted () {
-    this.$bind('firebasePositives', db.collection('positives').doc(this.userId).collection('data_by_day'))
-      .then((col) => {
-        var date = moment(col[0].id, 'YYYY-MM-DD')
-        var date2 = moment(new Date())
-        var dayDiff = date2.diff(date, 'days')
-        if (dayDiff < 10) {
-          dayDiff = 10
-        }
-        var data = []
-        this.days.push(date.format('YYYY-MM-DD'))
-        for (var i = 0; i < dayDiff; i++) {
-          var d = date.add(1, 'days').format('YYYY-MM-DD')
-          this.days.push(d)
-        }
-        this.firebaseExtendedPositives = data
-      })
-      .catch((error) => {
-        console.log('error in loading: ', error)
-      })
   },
   methods: {
     prev () {

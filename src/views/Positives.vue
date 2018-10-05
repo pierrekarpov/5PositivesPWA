@@ -4,14 +4,12 @@
       <h1>Hi {{ username }}</h1>
       <button v-on:click="logout">Logout</button>
     </row>
-
     <PositiveListContainer :userId="userId"/>
   </container>
 </template>
 
 <script>
 import PositiveListContainer from '@/components/PositiveListContainer.vue'
-import { db, globalStore } from '../main'
 import firebase from 'firebase'
 
 export default {
@@ -21,10 +19,10 @@ export default {
   },
   computed: {
     userId: function () {
-      return globalStore.user.id
+      return null
     },
-    username: function () {
-      return globalStore.user.data().username
+    username () {
+      return this.$store.getters['user/userName']
     }
   },
   methods: {

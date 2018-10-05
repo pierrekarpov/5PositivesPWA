@@ -1,13 +1,14 @@
 <template>
   <div class="login">
-   <div id="firebaseui-auth-container"></div>
+    <div @click="login()">Login</div>
+    <div id="firebaseui-auth-container"></div>
   </div>
 </template>
 
 <script>
 import firebase from 'firebase'
 import firebaseui from 'firebaseui'
-import { db, globalStore } from '../main'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'login',
@@ -21,17 +22,7 @@ export default {
       callbacks: {
         signInSuccessWithAuthResult: (authResult, redirectUrl) => {
           if (authResult.user) {
-            db.collection('users').where('auth_id', '==', authResult.user.uid)
-              .get()
-              .then((querySnapshot) => {
-                if (!querySnapshot.empty) {
-                  globalStore.user = querySnapshot.docs[0]
-                  this.$router.replace('positives')
-                }
-              })
-              .catch((error) => {
-                console.log('Error getting documents: ', error)
-              })
+            this.$router.replace('positives')
           }
         }
       }
@@ -41,6 +32,11 @@ export default {
       ui = new firebaseui.auth.AuthUI(firebase.auth())
     }
     ui.start('#firebaseui-auth-container', uiConfig)
+  },
+  methods: {
+    ...mapActions('user', {
+      login: 'login'
+    })
   }
 }
 </script>

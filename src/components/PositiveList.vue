@@ -51,8 +51,6 @@
 
 <script>
 
-import { db } from '../main'
-
 export default {
   props: {
     offset: Number,
@@ -64,43 +62,6 @@ export default {
     return {
       moodIcons: ['😡', '🙁', '😐', '😊', '😁'],
       newPositiveDetailText: {}
-    }
-  },
-  methods: {
-    addPositive (positive) {
-      let newPositiveDetails = [...positive.positive_details, this.newPositiveDetailText[positive.id]]
-      this.newPositiveDetailText[positive.id] = ''
-      this.saveToDatabase(positive, newPositiveDetails)
-    },
-    addNewPositive (day) {
-      let userId = 'fqR8JPFx7q90o1dcsxUw'
-      var ref = db.collection('positives').doc(userId).collection('data_by_day').doc(day)
-
-      ref.set({
-          positive_details: [this.newPositiveDetailText[day]]
-      })
-        .then(function() {
-            console.log("Document successfully written!");
-        })
-        .catch(function(error) {
-            console.error("Error writing document: ", error);
-        });
-        this.newPositiveDetailText[day] = ''
-    },
-    deletePositive (positiveId, positive) {
-      let newPositiveDetails = [...positive.positive_details.slice(0, positiveId), ...positive.positive_details.slice(positiveId + 1)]
-      this.saveToDatabase(positive, newPositiveDetails)
-    },
-    saveToDatabase (positive, data) {
-      let userId = 'fqR8JPFx7q90o1dcsxUw'
-      var ref = db.collection('positives').doc(userId).collection('data_by_day').doc(positive.id)
-
-      ref.update({
-        'positive_details': data
-      })
-        .then(function () {
-          console.log('Document successfully updated!')
-        })
     }
   }
 }
